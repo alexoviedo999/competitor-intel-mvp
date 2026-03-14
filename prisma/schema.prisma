@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Competitor {
+  id          String   @id @default(cuid())
+  name        String
+  domain      String   @unique
+  tagline     String?
+  targetMarket String?
+  pricingModel String?
+  fundingStage String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pricing     PricingSnapshot[]
+  features    Feature[]
+  news        NewsItem[]
+  jobs        JobPosting[]
+  reviews     Review[]
+  alerts      Alert[]
+  snapshots   PageSnapshot[]
+}
+
+model PricingSnapshot {
+  id           String   @id @default(cuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  capturedAt   DateTime @default(now())
+  tiers        Json     // Array of {name, price, features}
+  rawHtml      String?
+  changeDetected Boolean @default(false)
+  changeSummary String?
+}
+
+model Feature {
+  id           String   @id @default(cuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  launchedAt   DateTime?
+  deprecatedAt DateTime?
+  status       String   @default("active") // active, deprecated
+  category     String?
+}
+
+model NewsItem {
+  id           String   @id @default(cuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  title        String
+  summary      String?
+  source       String?
+  url          String?
+  publishedAt  DateTime?
+  category     String?  // funding, acquisition, product, leadership, press
+  createdAt    DateTime @default(now())
+}
+
+model JobPosting {
+  id           String   @id @default(cuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  title        String
+  department   String?  // engineering, sales, marketing, etc.
+  location     String?
+  url          String?
+  postedAt     DateTime @default(now())
+  removedAt    DateTime?
+  status       String   @default("active")
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  platform     String   // G2, Capterra, etc.
+  rating       Float
+  title        String?
+  text         String?
+  author       String?
+  sentiment    String?  // positive, neutral, negative
+  postedAt     DateTime?
+  capturedAt   DateTime @default(now())
+}
+
+model Alert {
+  id           String   @id @default(cuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  type         String   // pricing, feature, news, sentiment
+  severity     String   @default("info") // info, warning, critical
+  title        String
+  description  String
+  isRead       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model PageSnapshot {
+  id           String   @id @default(cuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  pageType     String   // pricing, homepage, features
+  url          String
+  html         String   @db.Text
+  capturedAt   DateTime @default(now())
+}
+
+model WeeklyReport {
+  id           String   @id @default(cuid())
+  startDate    DateTime
+  endDate      DateTime
+  summary      String   @db.Text
+  recommendations String @db.Text
+  createdAt    DateTime @default(now())
+  sentAt       DateTime?
+}
