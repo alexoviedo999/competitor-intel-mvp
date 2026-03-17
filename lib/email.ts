@@ -37,7 +37,7 @@ export async function sendAlert(
   alertTitle: string,
   alertDescription: string
 ) {
-  const severityColors = {
+  const severityColors: Record<string, string> = {
     critical: '#ef4444',
     warning: '#f59e0b',
     info: '#3b82f6',
