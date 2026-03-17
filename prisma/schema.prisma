@@ -61,6 +61,8 @@ model NewsItem {
   publishedAt  DateTime?
   category     String?  // funding, acquisition, product, leadership, press
   createdAt    DateTime @default(now())
+
+  @@unique([competitorId, title])
 }
 
 model JobPosting {
@@ -74,6 +76,8 @@ model JobPosting {
   postedAt     DateTime @default(now())
   removedAt    DateTime?
   status       String   @default("active")
+
+  @@unique([competitorId, title])
 }
 
 model Review {
