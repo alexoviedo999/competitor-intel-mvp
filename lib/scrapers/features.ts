@@ -2,8 +2,8 @@ import { chromium } from 'playwright';
 
 interface Feature {
   name: string;
-  description?: string;
-  category?: string;
+  description?: string | null;
+  category?: string | null;
 }
 
 export async function scrapeFeatures(domain: string): Promise<Feature[]> {
