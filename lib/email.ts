@@ -1,12 +1,16 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => {
+  return new Resend(process.env.RESEND_API_KEY || 'dummy-key-for-build');
+};
 
 export async function sendWeeklyReport(
   email: string,
   reportContent: string,
   weekOf: string
 ) {
+  const resend = getResend();
+  
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto;">
       <h1 style="color: #1f2937; border-bottom: 2px solid #4f46e5; padding-bottom: 10px;">
@@ -37,6 +41,8 @@ export async function sendAlert(
   alertTitle: string,
   alertDescription: string
 ) {
+  const resend = getResend();
+  
   const severityColors: Record<string, string> = {
     critical: '#ef4444',
     warning: '#f59e0b',
