@@ -2,9 +2,9 @@ import { chromium } from 'playwright';
 
 interface JobPosting {
   title: string;
-  department?: string;
-  location?: string;
-  url?: string;
+  department?: string | null;
+  location?: string | null;
+  url?: string | null;
 }
 
 export async function scrapeJobs(domain: string): Promise<JobPosting[]> {
