@@ -1,8 +1,10 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const getOpenAI = () => {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-build',
+  });
+};
 
 export async function synthesizeIntel(competitorName: string, data: {
   pricing?: any;
@@ -10,6 +12,8 @@ export async function synthesizeIntel(competitorName: string, data: {
   news?: any[];
   reviews?: any[];
 }) {
+  const openai = getOpenAI();
+  
   const prompt = `Analyze the following competitive intelligence for ${competitorName}:
 
 PRICING DATA:
@@ -41,6 +45,8 @@ Provide:
 }
 
 export async function generateWeeklyReport(competitors: any[]) {
+  const openai = getOpenAI();
+  
   const prompt = `Generate a weekly competitor intelligence report based on the following data:
 
 ${JSON.stringify(competitors, null, 2)}
@@ -71,6 +77,8 @@ Keep it concise and actionable.`;
 }
 
 export async function analyzeSentiment(reviews: any[]) {
+  const openai = getOpenAI();
+  
   const prompt = `Analyze the sentiment of these customer reviews:
 
 ${JSON.stringify(reviews, null, 2)}
@@ -90,5 +98,3 @@ Provide:
 
   return completion.choices[0].message.content;
 }
-
-export { openai };
