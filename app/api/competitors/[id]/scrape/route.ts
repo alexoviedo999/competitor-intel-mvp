@@ -39,7 +39,7 @@ export async function POST(
       const snapshot = await prisma.pricingSnapshot.create({
         data: {
           competitorId: id,
-          tiers: pricing.tiers,
+          tiers: pricing.tiers as any,
           rawHtml: pricing.rawHtml,
           changeDetected: changes.hasChanges,
           changeSummary: changes.summary,
